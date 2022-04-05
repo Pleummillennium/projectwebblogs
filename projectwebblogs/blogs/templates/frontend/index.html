@@ -1,0 +1,153 @@
+<!-- ดึงข้อมูล ใน file layout.html มาใช้งาน -->
+{% extends "frontend/layout.html"%}
+ {% load static %}
+<!-- แทรกเนื้อหาเข้าไปในพื้นที่ block content ที่ทำไว้ใน layout.html -->
+{% block content%}
+<!-- comma คั่นเลข -->
+{% load humanize %}
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+#myInput {
+  background-image: url("{% static 'frontend/css/icon/searchicon.png'%}");
+  background-position: 10px 12px;
+  background-repeat: no-repeat;
+  width: 100%;
+  font-size: 16px;
+  padding: 12px 20px 12px 40px;
+  border: 1px solid #ddd;
+  margin-bottom: 12px;
+}
+</style>
+
+<section class="section">
+      <div class="container">   
+        <h2 >ค้นหาบทความทั้งหมด</h2>
+         <!-- ป้องกันการแฮ็ค -->
+   <form
+    action="{% url 'searchData'%}"
+    method="post"
+    class="form-group" 
+  >
+    <!-- ป้องกันการแฮ็ค -->
+    {% csrf_token %}
+    <div class="form-group">
+      
+        
+        <input
+        
+          type="text"
+          id="myInput"
+          name="searchdata"
+          class="form-control"
+          placeholder="พิมพ์ชื่อบทความที่ต้องการค้นหา"
+        >
+        
+        <input type="submit"  value="ค้นหา" class="btn  my-2">
+      </div>
+    </div>
+    </section>
+
+<div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">
+  <div class="page-wrapper">
+    <div class="blog-top clearfix">
+      <h4 class="pull-left">
+        บทความทั้งหมด <a href="#"><i class="fa fa-rss"></i></a>
+      </h4>
+    </div> 
+  <!-- end blog-top -->
+
+  <!-- บทความทั้งหมด -->
+  <div class="blog-list clearfix">
+  <!-- วนลูปการทำงานของ blogs ที่ส่งมาจาก views.py ใน blogs เก็บไว้ใน blog -->
+
+   {% for blog in blogs%}
+      <div class="blog-box row">
+        <div class="col-md-4">
+          <div class="post-media">
+            <a href="{% url 'blogDetail' blog.id %}" title=""> 
+  <!-- {{blog.image.url}} ดึงรูปภาพที่อยู่ใน blog ที่รับค่ามาจาก Data Base มาใช้  -->
+   <img src="{{blog.image.url}}" alt="" class="img-fluid" />
+              <div class="hovereffect"></div>
+            </a>
+          </div> 
+  <!-- end media -->
+   </div> 
+  <!-- end col -->
+
+  <div class="blog-meta big-meta col-md-8">
+  <!-- ดึงชื่อ บทความ มาแสดง -->
+  <!-- ลิ้งไปหน้า blogDetail ที่เราตั้งชื่อ URl จาก ไฟล์ url.py  -->
+  <!-- id ที่เราส่งค่าไปที่ function blogDetail จากการวนลูป blog.id -->
+  <h4 >
+            <a href="{% url 'blogDetail' blog.id %}" title="">
+              {{blog.name}}
+            </a>
+          </h4>
+  <!-- ดึง รายระเอียด บทความ มาแสดง -->
+  <p>{{blog.description}}</p>
+  <!--  ดึง ชื่อ หมวดหมู่ มาแสดง -->
+  <small class="firstsmall">
+  <!-- href = เรียกใช้งาน searchCategory ใน ไฟล์ url.py -->
+  <a
+              class="bg-orange"
+              href="{% url 'searchCategory' blog.category_id%}"
+              title=""
+              >{{blog.category}}</a
+            ></small
+          >
+  <!-- ดึง วันที่สร้าง มาแสดง -->
+  <small><a href="#" title="">{{blog.created}}</a></small>
+  <!-- ดึง ชื่อ ผู้เขียน มาแสดง -->
+  <small
+            ><a href="{% url 'searchWriter' blog.writer %}" title=""
+              >by {{blog.writer}}</a
+            ></small
+          >
+  <!-- ดึง ยอดคนดู มาแสดง / | intcomma = comma คั่นเลข / int มาจาก views ที่กำหนด ใน model -->
+  <small
+            ><a href="#" title=""
+              ><i class="fa fa-eye"></i> {{blog.views | intcomma}}</a
+            ></small
+          >
+        </div>
+  <!-- end meta -->
+  </div>
+  <!-- end blog-box -->
+  {% endfor%}
+    </div>
+  <!-- end blog-list -->
+  </div>
+  <!-- end page-wrapper -->
+  <hr class="invis" />
+  <div class="row">
+    <div class="col-md-12">
+      <!-- ปุ่มเปลื่ยนหน้า -->
+      <nav aria-label="Page navigation">
+        <!-- สร้างเงื่อนไข ถ้า blogs มีจำนวน page มากว่า 1 หน้า ภายใน if ก็จะทำงาน -->
+        {% if blogs.paginator.num_pages > 1%}
+        <ul class="pagination justify-content-start">
+          <!-- วนลูป ตามจำนวน page_range -->
+          {% for page_number in blogs.paginator.page_range %}
+          <!-- นำ {{page_number}} ที่วนจำนวนเลขไว้มาแสดง -->
+          <li class="page-item">
+            <a class="page-link" href="?page={{page_number}}"
+              >{{page_number}}</a
+            >
+          </li>
+          {% endfor %}
+        </ul>
+        {% endif %}
+      </nav>
+    </div>
+    <!-- end col -->
+  </div>
+  <!-- end row -->
+</div>
+<!-- end col -->
+
+
+{% endblock %}

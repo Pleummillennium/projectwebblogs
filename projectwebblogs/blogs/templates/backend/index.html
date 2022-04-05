@@ -1,0 +1,178 @@
+<!-- ดึงข้อมูล ใน file layout.html มาใช้งาน -->
+{% extends "backend/layout.html"%} {% load static %}
+<!-- comma คั่นเลข -->
+{% load humanize %}
+<!-- แทรกเนื้อหาเข้าไปในพื้นที่ block content ที่ทำไว้ใน layout.html -->
+{% block content%}
+<!-- ตารางบทความ -->
+<div class="block full">
+  <!-- All Title -->
+  <div class="block-title">
+    <div class="block-options pull-right">
+      <a
+        href="javascript:void(0)"
+        class="btn btn-alt btn-sm btn-default"
+        data-toggle="tooltip"
+        title="Settings"
+        ><i class="fa fa-cog"></i
+      ></a>
+    </div>
+    <h2><strong>บทความทั้งหมดของฉัน</strong></h2>
+  </div>
+  <!-- Title -->
+
+  <!--Content -->
+  <table
+    id="ecom-products"
+    class="table table-bordered table-striped table-vcenter"
+  >
+    <thead>
+      <tr>
+        <th class="text-center" style="width: 70px">รหัส</th>
+        <th>ภาพปก</th>
+        <th class="text-right hidden-xs">ชื่อบทความ</th>
+        <th class="hidden-xs">ยอดเข้าชม (View)</th>
+        <th class="hidden-xs text-center">หมวดหมู่บทความ</th>
+        <th class="hidden-xs text-center">วันที่เขียนบทความ</th>
+        <th class="text-center">Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- แสดงข้อมูล บทความ ที่ดึงมาจาก database  -->
+      {% for blog in blogs%}
+      <tr>
+        <!-- ดึง id บทความ มาแสดง -->
+        <td class="text-center">{{blog.id}}</td>
+        <!-- ดึง รูปภาพ บทความ มาแสดง -->
+        <td>
+          <img
+            src="{{blog.image.url}}"
+            alt=""
+            style="width: 60px; height: 50px"
+          />
+        </td>
+        <td class="text-right hidden-xs">
+          <!-- ดึง ชื่อ บทความ มาแสดง -->
+          <strong>{{blog.name}}</strong>
+        </td>
+        <!-- ดึง คนดู บทความ มาแสดง  / | intcomma = comma คั่นเลข -->
+        <td class="text-center">{{blog.views | intcomma}}</td>
+        <!-- ดึง วันที่สร้าง บทความ มาแสดง -->
+        <td class="hidden-xs text-center">{{blog.category}}</td>
+        <td class="hidden-xs text-center">{{blog.created}}</td>
+        <td class="text-center">
+          <div class="btn-group btn-group-xs">
+            <!-- ปุ่มแก้ไขข้อมูล -->
+            <a
+              href="{% url 'editData' blog.id %}"
+              data-toggle="tooltip"
+              title="Edit"
+              class="btn btn-default"
+              ><i class="fa fa-pencil"></i
+            ></a>
+            <!-- ปุ่มลบข้อมูล -->
+            <!-- เรียกใช้ deleteData และส่ง id บทความ ไปด้วย -->
+            <!-- onclick="return confirm()" = กล่องยืนยันการลบบทความ -->
+            <a
+              onclick="return confirm('คุณต้องการลบบทความหรือไม่')"
+              href="{% url 'deleteData' blog.id %}"
+              data-toggle="tooltip"
+              title="Delete"
+              class="btn btn-xs btn-danger"
+              ><i class="fa fa-times"></i
+            ></a>
+          </div>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <!-- END All Products Content -->
+</div>
+
+<!-- ตารางบทความ -->
+<div class="block full">
+  <!-- All Title -->
+  <div class="block-title">
+    <div class="block-options pull-right">
+      <a
+        href="javascript:void(0)"
+        class="btn btn-alt btn-sm btn-default"
+        data-toggle="tooltip"
+        title="Settings"
+        ><i class="fa fa-cog"></i
+      ></a>
+    </div>
+    <h2 style="color: rgb(208, 223, 78)"><strong>รอตรวจสอบ</strong></h2>
+  </div>
+  <!-- Title -->
+
+  <!--Content -->
+  <table
+    id="ecom-products"
+    class="table table-bordered table-striped table-vcenter"
+  >
+    <thead>
+      <tr>
+        <th class="text-center" style="width: 70px">รหัส</th>
+        <th>ภาพปก</th>
+        <th class="text-right hidden-xs">ชื่อบทความ</th>
+        <th class="hidden-xs">ยอดเข้าชม (View)</th>
+        <th class="hidden-xs text-center">หมวดหมู่บทความ</th>
+        <th class="hidden-xs text-center">วันที่เขียนบทความ</th>
+        <th class="text-center">ตรวจสอบ</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- แสดงข้อมูล บทความ ที่ดึงมาจาก database  -->
+      {% for blog in allblogs%}
+      <tr>
+        <!-- ดึง id บทความ มาแสดง -->
+        <td class="text-center">{{blog.id}}</td>
+        <!-- ดึง รูปภาพ บทความ มาแสดง -->
+        <td>
+          <img
+            src="{{blog.image.url}}"
+            alt=""
+            style="width: 60px; height: 50px"
+          />
+        </td>
+        <td class="text-right hidden-xs">
+          <!-- ดึง ชื่อ บทความ มาแสดง -->
+          <strong>{{blog.name}}</strong>
+        </td>
+        <!-- ดึง คนดู บทความ มาแสดง  / | intcomma = comma คั่นเลข -->
+        <td class="text-center">{{blog.views | intcomma}}</td>
+        <!-- ดึง วันที่สร้าง บทความ มาแสดง -->
+        <td class="hidden-xs text-center">{{blog.category}}</td>
+        <td class="hidden-xs text-center">{{blog.created}}</td>
+        <td class="text-center">
+          <div class="btn-group btn-group-xs">
+            <!-- ปุ่มแก้ไขข้อมูล -->
+            <a
+              href="{% url 'editData' blog.id %}"
+              data-toggle="tooltip"
+              title="Edit"
+              class="btn btn-default"
+              ><i class="fa fa-pencil"></i
+            ></a>
+            <!-- ปุ่มลบข้อมูล -->
+            <!-- เรียกใช้ deleteData และส่ง id บทความ ไปด้วย -->
+            <!-- onclick="return confirm()" = กล่องยืนยันการลบบทความ -->
+            <a
+              onclick="return confirm('คุณต้องการลบบทความหรือไม่')"
+              href="{% url 'deleteData' blog.id %}"
+              data-toggle="tooltip"
+              title="Delete"
+              class="btn btn-xs btn-danger"
+              ><i class="fa fa-times"></i
+            ></a>
+          </div>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <!-- END All Products Content -->
+</div>
+{% endblock%}

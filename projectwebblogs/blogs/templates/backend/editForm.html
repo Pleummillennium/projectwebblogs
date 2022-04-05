@@ -1,0 +1,103 @@
+{% extends "backend/layout.html"%}
+
+<!-- เครื่องมือไว้สำหรับปรับแต่งแก้ไขบทความ -->
+{% block header %}
+<script src="//cdn.ckeditor.com/4.17.2/standard/ckeditor.js"></script>
+{% endblock %} {% block content %}
+<div class="block">
+  <div class="block-title">
+    <h2><strong>แก้ไขบทความ</strong></h2>
+  </div>
+
+  <!-- enctype = รองรับการ upload file -->
+  <!-- ถ้ากดปุ่มบันทึก action จะทำงาน โดยการลิ้งไป insertData -->
+  {% for message in messages %}
+  <p style="color: red">{{message}}</p>
+  {% endfor %}
+
+  <form
+    action="{% url 'updateData' blogEdit.id %}"
+    method="post"
+    enctype="multipart/form-data"
+    class="form-horizontal form-bordered"
+  >
+    <!-- ป้องกันการแฮ็ค -->
+    {% csrf_token %}
+    <div class="form-group">
+      <div class="col-md-6">
+        <input
+          type="text"
+          id="name"
+          name="name"
+          class="form-control"
+          placeholder="ชื่อบทความ"
+          value="{{blogEdit.name}}"
+        />
+      </div>
+      <div class="col-md-6">
+        <select name="category" class="select-chosen" style="width: 250px">
+          <!-- แสดงหมวดหมู่ที่เลือกไว้มาแสดงค่าเริ่มต้น -->
+          <option value="{{blogEdit.category_id}}">
+            {{blogEdit.category}}
+          </option>
+          {% for category in categories %}
+          <!-- {{category.id}} = อ้างอิงหมวดหมู่ในการเก็บบันทึก {{category.name}} = แค่ดึงมาแสดง -->
+          <option value="{{category.id}}">{{category.name}}</option>
+          {% endfor%}
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="col-md-12">
+        <textarea
+          type="text"
+          name="description"
+          rows="2"
+          class="form-control"
+          placeholder="รายละเอียดบทความ"
+        >
+{{blogEdit.description}}</textarea
+        >
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="col-md-12">
+        <textarea
+          type="text"
+          name="content"
+          rows="5"
+          class="form-control"
+          placeholder="เนื้อหาบทความ"
+        >
+{{blogEdit.content}}"</textarea
+        >
+      </div>
+    </div>
+    <script>
+      // ให้แทนที่เนื้อหาของ CKEDITOR เข้าไปใน textarea content
+      CKEDITOR.replace("content");
+    </script>
+    <div class="form-group">
+      <div class="col-md-12">
+        <!-- ดึงภาพปกมาแสดงหน้าแก้ไข -->
+        <img src="{{blogEdit.image.url}}" alt="" / style="width: 600px;height:
+        400px;">
+        <input
+          type="file"
+          name="image"
+          class="form-control"
+          placeholder="ภาพปก"
+        />
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="col-md-12">
+        <button type="submit" class="btn btn-sm btn-primary">
+          <i class="fa fa-angle-right"></i>อัพเดต
+        </button>
+      </div>
+    </div>
+  </form>
+  <!-- END Basic Form Elements Content -->
+</div>
+{% endblock%}
